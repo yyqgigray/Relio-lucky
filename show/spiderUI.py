@@ -1,5 +1,7 @@
 import re
 import tkinter as tk
+from tkinter.filedialog import askdirectory
+
 import spider.user.identify as identifyFunc
 import spider.executor.spiderExecutor
 
@@ -8,14 +10,17 @@ class spiderUI():
         self.ACCESS_TOKEN = ''
         self.APP_KEY = '885969782'
         self.APP_SECRET = '5e01407952b6db77c2fdfc026c4ccf56'
-
+        self.TARGET_FILE_PATH = tk.StringVar()
 
         ButtonFrame = tk.Frame(parent,bg='gray',width='30',padx=5,pady=10)
+        MsgFrame = tk.Frame(parent,bg='gray',width='30',padx=5,pady=10)
         TextFrame = tk.Frame(parent, bg='white', width='30', padx=5, pady=10)
 
-        self.loginText = tk.Label(ButtonFrame, width=25, text='未认证，请点击按钮进行认证' , background = 'red')
+        self.loginText = tk.Label(MsgFrame, width=25, text='未认证，请点击按钮进行认证' , background = 'red')
+
         loginButton = tk.Button(ButtonFrame, text="授权登录微博", command=self.identifyHandler, width=10)
         weiboIdInputButton = tk.Button(ButtonFrame, text="爬取微博评论关键词", command=self.getWeiboId, width=15)
+        pathInputButton = tk.Button(ButtonFrame, text="评论存储路径选择", command=self.selectPath)
 
         weiboIdLabel = tk.Label(TextFrame, width=25, text='请在此处输入微博ID或者微博网址:')
         self.weiboIdInput = tk.Text(TextFrame, height=10)  # 微博链接输入框
@@ -23,11 +28,14 @@ class spiderUI():
         findOutputWindow = tk.Text(TextFrame, height=20)  # 校验错误输出框
 
         ##  pack位置调整
+
+        MsgFrame.pack(side=tk.LEFT,fill='y')
         ButtonFrame.pack(fill='x')
         TextFrame.pack(fill='x')
 
         loginButton.pack(side=tk.LEFT,ipadx=5,padx=5)
         weiboIdInputButton.pack(side=tk.LEFT,ipadx=5)
+        pathInputButton.pack(side=tk.LEFT,ipadx=5)
         self.loginText.pack(side=tk.RIGHT,ipadx=5,padx=5)
 
         weiboIdLabel.pack(fill='x')
@@ -54,5 +62,12 @@ class spiderUI():
             weiboID = pattern.findall(weiboLink)[0]
             print(weiboID)
 
+    def selectPath(self):
+        path_ = askdirectory()
+        self.TARGET_FILE_PATH.set(path_)
+
+
+
     def getComments(self,weiboID):
-        spiderExecutor = spider.SpiderExecutor(weiboID, TARGET_FILE_PATH, self.ACCESS_TOKEN, self.APP_KEY, self.APP_SECRET)
+        spiderExecutor = spider.SpiderExecutor(weiboID, self.TARGET_FILE_PATH, self.ACCESS_TOKEN, self.APP_KEY, self.APP_SECRET)
+
