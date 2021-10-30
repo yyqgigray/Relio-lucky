@@ -1,7 +1,7 @@
 import wordcloud
 
 
-class WordCloudTool(object):
+class WordCloudTool():
 
     def __init__(self,TARGET_DATA_PATH,TARGET_PNG_PATH):
         self.TARGET_DATA_PATH = TARGET_DATA_PATH
@@ -17,3 +17,4 @@ class WordCloudTool(object):
             data = f.read()
         c.generate(data)  #2.加载词云文本
         c.to_file(self.TARGET_PNG_PATH)
+        return 0
